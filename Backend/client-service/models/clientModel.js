@@ -26,7 +26,7 @@ const getAnEvent = (event_id) => {
             if(err) reject(err);
             else resolve(row);
         });  
-});
+    });
 }
 
  module.exports = { getEvents, getAnEvent };
