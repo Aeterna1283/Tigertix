@@ -23,4 +23,14 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
 };
 
- module.exports = { getEvents };
+const getAnEvent = (event_id) => { 
+    db.get("SELECT * FROM Event WHERE event_id = ?" [event_id], (err, row) => {
+            if (err) {
+                console.error(err.message);
+                return;
+            }
+            console.log(row)
+});
+}
+
+ module.exports = { getEvents, getAnEvent };
