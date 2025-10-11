@@ -22,10 +22,28 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
 const getAnEvent = (event_id) => { 
     return new Promise((resolve, reject) => {
-        db.get("SELECT * FROM Event WHERE event_id = ?" [event_id], (err, row) => {
+        db.get("SELECT * FROM Event WHERE event_id = ?", [event_id], (err, row) => {
             if(err) reject(err);
             else resolve(row);
         });  
+    });
+}
+
+const purchaseTicket = (event_id) => {
+    return new Promise((resolve, reject) => {
+        db.run("UPDATE Event SET event_tickets = event_tickets-1 WHERE event_id = ?", [event_id], function(err)
+        {
+            //error handling
+            if (err) 
+            {   
+                reject(err);
+                return;
+            }
+            resolve(
+            {
+                event_tickets: event_tickets
+            });                  
+        });
     });
 }
 
