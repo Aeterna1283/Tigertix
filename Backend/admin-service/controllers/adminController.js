@@ -1,12 +1,12 @@
-const createFunction = require('../models/adminModel');
+const modelsFunctions = require('../models/adminModel');
 
 async function createEvent(req, res){
 
-    const {event_name, event_date, event_tickets, event_location } = req.body;
-
     try{
-        const newEvenet = await createFunction.createEvent(event_name, event_date, event_tickets, event_location);
-        res.status(201).json(newEvent);    
+        const {event_name, event_date, event_tickets, event_location } = req.body;
+        const newEvent = await modelsFunctions.createEvent(event_name, event_date, event_tickets, event_location);    
+        const newTicket = await adminModel.createTicket(newEvent.event_id, event_tickets, ticket_price, ticket_type);
+        res.status(201).json({event: newEvent, ticket: newTicket});
     } catch (err) {
         console.error("Failed to create event: ", err.message);
         res.status(500).json({error: "Server error"})
