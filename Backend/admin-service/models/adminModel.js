@@ -71,4 +71,4 @@ const createTicket = (event_id, ticket_availability, ticket_price, ticket_type) 
 };
 
        
-    module.exports = {createEvent, createTicket};
+    module.exports = {createEvent, createTicket, db};
