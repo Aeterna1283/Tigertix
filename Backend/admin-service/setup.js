@@ -32,12 +32,17 @@ const db = new sqlite3.Database(dbPath, (err) =>
     {
         db.serialize(() => 
         {
-            db.run('PRAGMA foreign_keys = ON');
-            db.run('DROP TABLE IF EXISTS Ticket');
-            db.run('DROP TABLE IF EXISTS Event');
-            db.run('CREATE TABLE Event (event_id INTEGER PRIMARY KEY AUTOINCREMENT, event_name TEXT NOT NULL, event_date TEXT NOT NULL, event_tickets INTEGER NOT NULL, event_location TEXT NOT NULL)');
-            db.run('CREATE TABLE Ticket (ticket_id INTEGER PRIMARY KEY AUTOINCREMENT, event_id INTEGER NOT NULL, ticket_price REAL, ticket_type TEXT, ticket_availability BOOLEAN NOT NULL, FOREIGN KEY(event_id) REFERENCES Event(event_id))', (err) => {
-                if (err) 
+            db.run(`PRAGMA foreign_keys = ON`);
+            db.run(`DROP TABLE IF EXISTS Ticket`);
+            db.run(`DROP TABLE IF EXISTS Event`);
+            db.run(`CREATE TABLE Event (event_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 event_name TEXT NOT NULL, event_date TEXT NOT NULL,
+                  event_tickets INTEGER NOT NULL, event_location TEXT NOT NULL)`);
+            db.run(`CREATE TABLE Ticket (ticket_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 event_id INTEGER NOT NULL, ticket_price REAL, ticket_type TEXT,
+                  ticket_availability BOOLEAN NOT NULL,
+                   FOREIGN KEY(event_id) REFERENCES Event(event_id))`, (err) => {
+                if (err)
                 {
                     console.error('Failed to create the db tables:', err.message);
                     reject(err);
