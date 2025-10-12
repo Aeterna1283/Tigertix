@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 
 function App() {
   const [events, setEvents] = useState([]);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:6001/api/events')
@@ -27,20 +28,35 @@ function App() {
    * @async
    * @function
    * @param {number} eventId - ID of the event for which to purchase a ticket
+   * @param {string} eventName - Name of the event
    * @returns {Promise<void>}
    */
 
-  const buyTicket = async (eventId) => {
+  const buyTicket = async (eventId, eventName) => {
     try {
-      const response = await fetch(`http://localhost:6001/api/events/${eventId}/purchase`, { method: 'POST' });
-      if (!response.ok) throw new Error('Failed to purchase ticket');
+      const response = await fetch(`http://localhost:6001/api/events/${eventId}/purchase`, { 
+        method: 'POST' 
+      });
       
-      //update ticket in UI
-      setEvents(prev => prev.map(ev => ev.event_id === eventId ? { ...ev, event_tickets: ev.event_tickets - 1 } : ev));
-      alert('Ticket purchased successfully!');
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to purchase ticket');
+      }
+      
+      setEvents(prev => prev.map(ev => 
+        ev.event_id === eventId 
+          ? { ...ev, event_tickets: Math.max(0, ev.event_tickets - 1) } 
+          : ev
+      ));
+      
+      setMessage('SUCCESS: Ticket purchased successfully for ' + eventName);
+      setTimeout(() => setMessage(''), 3000);
+      
     } catch (err) {
       console.error(err);
-      alert('Failed to purchase ticket');
+      setMessage('ERROR: ' + err.message);
+      setTimeout(() => setMessage(''), 3000);
     }
   };
 
@@ -59,6 +75,24 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="" aria-hidden="true" />
         <h1>TigerTix Event Tickets</h1>
+        
+        {/* Live region for screen reader announcements */}
+        {message && (
+          <div 
+            role="status"
+            aria-live="polite" 
+            aria-atomic="true"
+            style={{
+              padding: '10px 20px',
+              margin: '10px 0',
+              backgroundColor: message.includes('SUCCESS') ? '#4CAF50' : '#f44336',
+              color: 'white',
+              borderRadius: '5px'
+            }}
+          >
+            {message}
+          </div>
+        )}
       </header>
 
       {/* Main Content */}
@@ -66,30 +100,36 @@ function App() {
         {events.length === 0 ? (
           <p>Loading events...</p>
         ) : (
-          events.map(ev => (
-            <div key={ev.event_id} className="event-card">
-              <h3>{ev.event_name}</h3>
-              <p>Date: {ev.event_date}</p>
-              <p>Tickets Available: {ev.event_tickets}</p>
+          <ul style={{ listStyle: 'none', padding: 0 }}>
+            {events.map(ev => (
+              <li key={ev.event_id} className="event-card">
+                <article>
+                  <h3>{ev.event_name}</h3>
+                  <p>Date: {ev.event_date}</p>
+                  <p>Location: {ev.event_location}</p>
+                  <p>Tickets Available: {ev.event_tickets}</p>
 
-              <button onClick={() => buyTicket(ev.event_id)}
-               disabled={ev.event_tickets === 0}
-                aria-label={
-                  ev.event_tickets > 0
-                    ?'Buy ticket for '+ev.event_name
-                    :'No more tickets available for '+ev.event_name
-                }
-                >
-                {ev.event_tickets > 0 ? 'Buy Ticket' : 'Sold Out'}
-              </button>
-            </div>
-          ))
+                  <button 
+                    onClick={() => buyTicket(ev.event_id, ev.event_name)}
+                    disabled={ev.event_tickets === 0}
+                    aria-label={
+                      ev.event_tickets > 0
+                        ? 'Buy ticket for ' + ev.event_name
+                        : 'No more tickets available for ' + ev.event_name
+                    }
+                  >
+                    {ev.event_tickets > 0 ? 'Buy Ticket' : 'Sold Out'}
+                  </button>
+                </article>
+              </li>
+            ))}
+          </ul>
         )}
       </main>
 
       {/* Footer */}
       <footer className="App-footer">
-        <p>© 2025 TigerTix. All rights reserved.</p>
+        <p>&copy; 2025 TigerTix. All rights reserved.</p>
       </footer>
     </div>
   );

@@ -71,4 +71,15 @@ Matches main section background, lighter text, and padding
   padding: 1rem;
 }
 
+button:focus {
+  outline: 3px solid #ffa500;
+  outline-offset: 2px;
+}
+
+button:focus-visible {
+  outline: 3px solid #ffa500;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.3);
+}
+
 
