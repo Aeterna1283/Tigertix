@@ -45,8 +45,15 @@ function App() {
               <h3>{ev.event_name}</h3>
               <p>Date: {ev.event_date}</p>
               <p>Tickets Available: {ev.event_tickets}</p>
-              <button onClick={() => buyTicket(ev.event_id)} disabled={ev.event_tickets === 0}>
-                {ev.event_tickets > 0 ? 'Buy '+ ev.event_name+' Ticket' : 'Sold Out'}
+              <button onClick={() => buyTicket(ev.event_id)}
+               disabled={ev.event_tickets === 0}
+                aria-label={
+                  ev.event_tickets > 0
+                    ?'Buy ticket for '+ev.event_name
+                    :'No more tickets available for '+ev.event_name
+                }
+                >
+                {ev.event_tickets > 0 ? 'Buy Ticket' : 'Sold Out'}
               </button>
             </div>
           ))
