@@ -21,6 +21,7 @@ function App() {
         method: 'POST'
       });
       if (!response.ok) throw new Error('Failed to purchase ticket');
+      
       // Update the UI by decrementing the ticket count locally
       setEvents(prevEvents => prevEvents.map(ev => 
         ev.event_id === eventId 
@@ -53,7 +54,7 @@ function App() {
                 <button 
                   onClick={() => buyTicket(ev.event_id)}
                   disabled={ev.event_tickets === 0}
-                > 
+                > {/* if statement stopping us from buying more tickets than there are tickets available */}
                   {ev.event_tickets > 0 ? 'Buy Ticket' : 'Sold Out'} 
                 </button>
               </div>
