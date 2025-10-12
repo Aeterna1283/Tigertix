@@ -1,6 +1,8 @@
-import logo from './logo.svg';
+import logo from './logo.png';
 import './App.css';
-
+//scss/_utilities.scss
+//const myImage = document.getElementById(logo);
+//logo.style.opacity = 0.6;
 function App() {
   return (
     <div className="App">
