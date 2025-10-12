@@ -3,67 +3,59 @@ import './App.css';
 import { useEffect, useState } from 'react';
 
 function App() {
-  // State to hold events
   const [events, setEvents] = useState([]);
 
-  // Fetch events from client microservice on component mount
   useEffect(() => {
-    fetch('http://localhost:6001/api/events') // client microservice port
-      .then(response => response.json())
+    fetch('http://localhost:6001/api/events')
+      .then(res => res.json())
       .then(data => setEvents(data))
       .catch(err => console.error('Error fetching events:', err));
   }, []);
 
-  // Handle buying a ticket
   const buyTicket = async (eventId) => {
     try {
-      const response = await fetch(`http://localhost:6001/api/events/${eventId}/purchase`, {
-        method: 'POST'
-      });
+      const response = await fetch(`http://localhost:6001/api/events/${eventId}/purchase`, { method: 'POST' });
       if (!response.ok) throw new Error('Failed to purchase ticket');
-      
-      // Update the UI by decrementing the ticket count locally
-      setEvents(prevEvents => prevEvents.map(ev => 
-        ev.event_id === eventId 
-          ? { ...ev, event_tickets: ev.event_tickets - 1 } 
-          : ev
-      ));
+      setEvents(prev => prev.map(ev => ev.event_id === eventId ? { ...ev, event_tickets: ev.event_tickets - 1 } : ev));
       alert('Ticket purchased successfully!');
     } catch (err) {
       console.error(err);
       alert('Failed to purchase ticket');
     }
-  }
+  };
 
   return (
     <div className="App">
+      {/* Header Section */}
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <h1>TigerTix Event Tickets</h1>
-
-        {/* Event List */}
-        <div>
-          {events.length === 0 ? (
-            <p>Loading events...</p>
-          ) : (
-            events.map(ev => (
-              <div key={ev.event_id} style={{ margin: '1rem', border: '1px solid #fff', padding: '1rem', borderRadius: '8px' }}>
-                <h3>{ev.event_name}</h3>
-                <p>Date: {ev.event_date}</p>
-                <p>Tickets Available: {ev.event_tickets}</p>
-                <button 
-                  onClick={() => buyTicket(ev.event_id)}
-                  disabled={ev.event_tickets === 0}
-                > {/* if statement stopping us from buying more tickets than there are tickets available */}
-                  {ev.event_tickets > 0 ? 'Buy Ticket' : 'Sold Out'} 
-                </button>
-              </div>
-            ))
-          )}
-        </div>
       </header>
+
+      {/* Main Content */}
+      <main className="App-main">
+        {events.length === 0 ? (
+          <p>Loading events...</p>
+        ) : (
+          events.map(ev => (
+            <div key={ev.event_id} className="event-card">
+              <h3>{ev.event_name}</h3>
+              <p>Date: {ev.event_date}</p>
+              <p>Tickets Available: {ev.event_tickets}</p>
+              <button onClick={() => buyTicket(ev.event_id)} disabled={ev.event_tickets === 0}>
+                {ev.event_tickets > 0 ? 'Buy Ticket' : 'Sold Out'}
+              </button>
+            </div>
+          ))
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer className="App-footer">
+        <p>© 2025 TigerTix. All rights reserved.</p>
+      </footer>
     </div>
   );
 }
-// now when ticket count is 0, tickets cannot be negative
+
 export default App;
