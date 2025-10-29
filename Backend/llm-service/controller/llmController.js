@@ -12,7 +12,7 @@ const apiKey = "AIzaSyBrGzToNCENjJz-maYY3-yu07NhW8_f_7A" //process.env.GEMINI_AP
 
 const genAI = new GoogleGenerativeAI(apiKey);
 const geminiModel = genAI.getGenerativeModel({
-  model: 'gemini‑1.5‑pro',          // or whatever version you select
+  model: 'gemini‑2.5‑flash',          // or whatever version you select
   generationConfig: {
     temperature: 0.0,               // deterministic for parsing
     maxOutputTokens: 100,
