@@ -24,5 +24,8 @@ Thumbs.db
 frontend/build/
 frontend/dist/
 
+.env
+node_modules/
+
 # Testing
 
