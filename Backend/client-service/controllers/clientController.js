@@ -71,5 +71,95 @@ async function getAnEvent(req, res){
         }
     }
 
-module.exports = {getEvents, getAnEvent, purchaseTicket};
+// module.exports = {getEvents, getAnEvent, purchaseTicket};
 
+// const axios = require('axios');
+// const llmModel = require('../models/llmModel'); // we’ll create this to handle DB logic like getEventByName and bookTicketsTransaction
+
+// /**
+//  * Parses a user's natural-language booking request using Gemini.
+//  * Handles POST /api/llm/parse.
+//  * @param {Object} req - Express request object
+//  * @param {string} req.body.text - User input like "Book 2 tickets for Jazz Night"
+//  * @param {Object} res - Express response object
+//  */
+// async function parseBooking(req, res) {
+//     try {
+//         const { text } = req.body;
+//         if (!text || text.trim() === '') {
+//             return res.status(400).json({ error: 'Input text is required' });
+//         }
+
+//         // LLM prompt for structured JSON
+//         const prompt = `
+// You are a ticket-booking assistant.
+// A user wants to book tickets.
+// Extract only JSON with keys "event" (string) and "tickets" (integer).
+// Example: { "event": "Jazz Night", "tickets": 2 }
+// User input: "${text}"
+// `;
+
+//         // Call Gemini API
+//         const response = await axios.post('https://api.gemini.com/v1/generate', {
+//             prompt,
+//             max_tokens: 100,
+//             temperature: 0
+//         });
+
+//         const llmOutput = response.data.output_text;
+
+//         let parsed;
+//         try {
+//             parsed = JSON.parse(llmOutput);
+//         } catch (err) {
+//             return res.status(400).json({ error: 'Could not parse LLM response' });
+//         }
+
+//         const eventRow = await llmModel.getEventByName(parsed.event);
+//         if (!eventRow) {
+//             return res.status(404).json({ error: `Event "${parsed.event}" not found` });
+//         }
+
+//         res.status(200).json({
+//             message: `Proposed booking: ${parsed.tickets} ticket(s) for "${parsed.event}"`,
+//             booking: parsed
+//         });
+
+//     } catch (err) {
+//         console.error("Failed to parse booking:", err.message);
+//         res.status(500).json({ error: 'Server error' });
+//     }
+// }
+
+// /**
+//  * Confirms a booking after user approval.
+//  * Handles POST /api/llm/confirm.
+//  * @param {Object} req - Express request object
+//  * @param {string} req.body.event - Event name
+//  * @param {number} req.body.tickets - Number of tickets to book
+//  * @param {Object} res - Express response object
+//  */
+// async function confirmBooking(req, res) {
+//     try {
+//         const { event, tickets } = req.body;
+//         if (!event || !tickets) {
+//             return res.status(400).json({ error: 'Event and tickets are required' });
+//         }
+
+//         const result = await llmModel.bookTicketsTransaction(event, tickets);
+//         if (!result.success) {
+//             return res.status(400).json({ error: result.message });
+//         }
+
+//         res.status(200).json({
+//             message: `Booking confirmed for ${tickets} ticket(s) to "${event}"`,
+//             booking: result.booking
+//         });
+
+//     } catch (err) {
+//         console.error("Failed to confirm booking:", err.message);
+//         res.status(500).json({ error: 'Server error' });
+//     }
+// }
+
+// module.exports = { parseBooking, confirmBooking };
