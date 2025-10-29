@@ -1,6 +1,6 @@
 const express = ('express');
 const cors = require('cors');
-const llmRoute = require('./routes/llmRoutes');
+const llmRoute = require('./route/llmRoute');
 
 const app = express();
 const PORT = 7001;
