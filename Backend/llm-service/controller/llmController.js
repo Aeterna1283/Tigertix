@@ -1,6 +1,6 @@
 // llmController.js
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const bookingModel = require('../models/bookingModel');
+const bookingModel = require('../model/llmModel.js');
 require('dotenv').config();
 
 // Initialize Gemini model
