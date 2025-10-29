@@ -4,11 +4,11 @@ const bookingModel = require('../models/bookingModel');
 require('dotenv').config();
 
 // Initialize Gemini model
-const apiKey = process.env.GEMINI_API_KEY;
-if (!apiKey) {
-  console.error('GEMINI_API_KEY is missing in .env');
-  process.exit(1);
-}
+const apiKey = "AIzaSyBrGzToNCENjJz-maYY3-yu07NhW8_f_7A" //process.env.GEMINI_API_KEY;
+// if (!apiKey) {
+//   console.error('GEMINI_API_KEY is missing in .env');
+//   process.exit(1);
+// }
 
 const genAI = new GoogleGenerativeAI(apiKey);
 const geminiModel = genAI.getGenerativeModel({
