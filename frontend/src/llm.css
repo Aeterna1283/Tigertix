@@ -1,0 +1,109 @@
+/*LLM Chat container*/
+/* .llm-container {
+  margin: 2rem auto;
+  padding: 1.5rem;
+  max-width: 600px;
+  background-color: #282c34; matches App-header background */
+  /* color: #fff;
+  border-radius: 8px;
+  border: 1px solid rgba(184, 130, 15, 0.473);
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+} */
+
+/* Chat display area */
+/* .llm-chat {
+  background-color: #1c1f26; /* matches App-main background */
+  /* padding: 1rem;
+  border-radius: 6px;
+  min-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  font-family: Arial, sans-serif;
+  color: #ccc;
+} */ 
+
+/* Individual message styling */
+/* .llm-message {
+  margin-bottom: 0.8rem;
+} */
+
+/* .llm-message.user {
+  text-align: right; */
+  /* color: #ffa500; highlight user messages in your accent color */
+/* } */
+
+/* .llm-message.ai {
+  text-align: left;
+  color: #ccc;
+} */
+
+/* Input area container */
+/* .llm-input-container {
+  display: flex;
+  gap: 0.5rem;
+} */
+
+/* Text input for AI chat */
+/* .llm-input {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(184, 130, 15, 0.473);
+  background-color: #1c1f26;
+  color: #fff;
+} */
+
+/* Buttons: Send & Confirm Booking */
+/* .llm-button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid rgba(184, 130, 15, 0.473);
+  background-color: #282c34;
+  color: #ffa500;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+} */
+
+/* .llm-button:hover {
+  background-color: rgba(184, 130, 15, 0.2);
+  transform: scale(1.02);
+} */
+
+/* .llm-button:focus {
+  outline: 3px solid #ffa500;
+  outline-offset: 2px;
+} */
+
+/* .llm-button:focus-visible {
+  outline: 3px solid #ffa500;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.3);
+} */
+
+/* Accessibility: ensure chat messages are readable by screen readers */
+/* .llm-chat[aria-live="polite"] {
+  min-height: 50px;
+} */
+
+/* Microphone button for voice input */
+/* .llm-mic-button {
+  border: none;
+  background-color: #282c34;
+  color: #ffa500;
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
+
+/* .llm-mic-button:focus {
+  outline: 3px solid #ffa500;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.3);
+} */
