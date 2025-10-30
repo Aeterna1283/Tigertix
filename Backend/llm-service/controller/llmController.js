@@ -125,7 +125,7 @@ async function processLLMBooking(req, res) {
         console.log("Processing LLM request:", message);
 
         // Send user message to Gemini or OpenAI model microservice
-        const llmResponse = await axios.post('http://localhost:8085/api/llm/interpret', { message });
+        const llmResponse = await axios.post('http://localhost:7001/api/llm/interpret', { message });
         const parsed = llmResponse.data;
 
         if (!parsed || !parsed.event || !parsed.tickets) {
