@@ -2,20 +2,19 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./llm.css";
 
-function LLM() {
+function LLM({ events, setEvents }) {
   const [messages, setMessages] = useState([
-    { role: 'ai', text: 'Hello! I can help you book tickets. Try saying "Book 2 tickets for Tiger Football Game" or "Show me events on 2025-11-15".' }
+    { role: "ai", text: 'Hello! I can help you book tickets. Try saying "Book 2 tickets for Tiger Football Game" or "Show me events on 2025-11-15".' },
   ]);
   const [input, setInput] = useState("");
   const [proposedBooking, setProposedBooking] = useState(null);
   const [listening, setListening] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  
+
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
 
-  // Auto-scroll to bottom
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -24,7 +23,6 @@ function LLM() {
     scrollToBottom();
   }, [messages]);
 
-  // Voice recognition setup
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -49,7 +47,7 @@ function LLM() {
     recognition.onerror = (event) => {
       console.error("Speech recognition error:", event.error);
       setListening(false);
-      addMessage('ai', 'Sorry, I had trouble hearing you. Please try again.', false);
+      addMessage("ai", "Sorry, I had trouble hearing you. Please try again.");
     };
 
     recognition.onend = () => {
@@ -59,34 +57,20 @@ function LLM() {
     recognitionRef.current = recognition;
   }, []);
 
-  // Text-to-speech (disabled for errors)
-  const speak = (text) => {
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 1.0;
-      utterance.pitch = 1.0;
-      utterance.volume = 1.0;
-      window.speechSynthesis.speak(utterance);
-    }
-  };
-
-  const addMessage = (role, text, shouldSpeak = true) => {
+  const addMessage = (role, text) => {
     setMessages((prev) => [...prev, { role, text }]);
-    if (role === "ai" && shouldSpeak) {
-      speak(text);
-    }
   };
 
   const toggleListening = () => {
     if (!recognitionRef.current) {
-      addMessage("ai", "Voice input is not supported in your browser.", false);
+      addMessage("ai", "Voice input is not supported in your browser.");
       return;
     }
 
     if (!listening) {
       setListening(true);
       recognitionRef.current.start();
-      addMessage("user", "[Listening...]", false);
+      addMessage("user", "[Listening...]");
     } else {
       recognitionRef.current.stop();
       setListening(false);
@@ -98,14 +82,14 @@ function LLM() {
     if (!textToSend) return;
 
     if (messageText === input) {
-      addMessage("user", textToSend, false);
+      addMessage("user", textToSend);
     }
 
     setInput("");
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:7001/api/llm/chat", { text: textToSend });
+      const response = await axios.post("http://localhost:7001/api/llm/parse", { text: textToSend });
       const data = response.data;
 
       if (data.intent === "book_tickets" && data.message) {
@@ -121,14 +105,14 @@ function LLM() {
             .join("\n");
           addMessage("ai", `Here are the events:\n${eventList}`);
         } else {
-          addMessage("ai", "No events found.", false);
+          addMessage("ai", "No events found.");
         }
       } else {
         addMessage("ai", data.message || "How can I help you?");
       }
     } catch (err) {
       console.error(err);
-      addMessage("ai", "Sorry, I encountered an error. Please try again.", false);
+      addMessage("ai", "Sorry, I encountered an error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -138,17 +122,39 @@ function LLM() {
     if (!proposedBooking) return;
 
     setLoading(true);
-    addMessage("user", "Yes, confirm booking", false);
+    addMessage("user", "Yes, confirm booking");
 
     try {
-      const response = await axios.post("http://localhost:7001/api/llm/confirm", proposedBooking);
+      const response = await axios.post(
+        "http://localhost:7001/api/llm/confirm",
+        proposedBooking
+      );
       const data = response.data;
 
       addMessage("ai", data.message || "Booking confirmed!");
+
+      // Update events state in App.js to reflect new ticket count
+      setEvents((prevEvents) =>
+        prevEvents.map((ev) =>
+          ev.event_name === proposedBooking.event
+            ? {
+                ...ev,
+                event_tickets: Math.max(
+                  0,
+                  ev.event_tickets - proposedBooking.tickets
+                ),
+              }
+            : ev
+        )
+      );
+
       setProposedBooking(null);
     } catch (err) {
       console.error(err);
-      addMessage("ai", err.response?.data?.error || "Failed to confirm booking. Please try again.", false);
+      addMessage(
+        "ai",
+        err.response?.data?.error || "Failed to confirm booking. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -163,7 +169,6 @@ function LLM() {
 
   return (
     <>
-      {/* Chatbot Toggle Button */}
       <button
         className={`chatbot-toggle ${isOpen ? "open" : ""}`}
         onClick={() => setIsOpen(!isOpen)}
@@ -172,7 +177,6 @@ function LLM() {
         {isOpen ? "×" : "AI"}
       </button>
 
-      {/* Chatbot Panel */}
       <div className={`chatbot-panel ${isOpen ? "open" : ""}`}>
         <div className="chatbot-header">
           <h3>AI Ticket Assistant</h3>
