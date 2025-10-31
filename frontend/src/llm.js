@@ -12,6 +12,9 @@ function LLM({ events, setEvents }) {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // ADDED: State for narrator toggle
+  const [narratorEnabled, setNarratorEnabled] = useState(false);
+
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
 
@@ -57,8 +60,21 @@ function LLM({ events, setEvents }) {
     recognitionRef.current = recognition;
   });
 
+  // addMessage is for the ai speaking
   const addMessage = (role, text) => {
     setMessages((prev) => [...prev, { role, text }]);
+    if (role === "ai") {
+      speakMessage(text); // call speech synthesis if narrator enabled
+    }
+  };
+
+  // function to read AI messages aloud
+  const speakMessage = (text) => {
+    if (!narratorEnabled || !window.speechSynthesis) return;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    window.speechSynthesis.speak(utterance);
   };
 
   const toggleListening = () => {
@@ -154,16 +170,21 @@ function LLM({ events, setEvents }) {
     }
 
     setProposedBooking(null);
-  } catch (err) {
+  } 
+  catch (err) 
+  {
     console.error("Booking confirmation error:", err);
     addMessage(
       "ai",
       err.response?.data?.error || "Failed to confirm booking. Please try again."
     );
-  } finally {
+  } 
+  finally 
+  {
     setLoading(false);
   }
 };
+
 
 
   const handleKeyPress = (e) => {
@@ -186,6 +207,19 @@ function LLM({ events, setEvents }) {
       <div className={`chatbot-panel ${isOpen ? "open" : ""}`}>
         <div className="chatbot-header">
           <h3>AI Ticket Assistant</h3>
+
+          {/* ADDED: Narrator toggle checkbox */}
+          <div className="narrator-toggle">
+            <label>
+              <input
+                type="checkbox"
+                checked={narratorEnabled}
+                onChange={() => setNarratorEnabled(!narratorEnabled)}
+              />
+              Narrator
+            </label>
+          </div>
+
           <button
             className="close-btn"
             onClick={() => setIsOpen(false)}
@@ -255,3 +289,4 @@ function LLM({ events, setEvents }) {
 }
 
 export default LLM;
+
