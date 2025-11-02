@@ -5,7 +5,7 @@ require("chromedriver");
 
 async function runTest() {
   let options = new chrome.Options();
-  options.addArguments("--headless=new");
+  //options.addArguments("--headless=new");
   options.addArguments("--disable-gpu");
   options.addArguments("--window-size=1920,1080");
 
