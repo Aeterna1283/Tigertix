@@ -12,7 +12,7 @@ require("chromedriver");
  * It first Opens TigerTix application then opens chatbot interface. Then it Inputs natural language booking request
  *  and waits for LLM to propose booking. Finally it verifies the confirm button appears
  * 
- * @requires Frontend running on localhost:3000
+ * @requires Frontend running on localhost:5000
  * @requires LLM service running on localhost:7001
  * @requires Client service running on localhost:6001
  * 
@@ -26,6 +26,14 @@ async function runTest() {
   //options.addArguments("--headless=new");
   options.addArguments("--disable-gpu");
   options.addArguments("--window-size=1920,1080");
+  options.addArguments("--remote-allow-origins=*")
+  .addArguments("--disable-web-security")
+  .addArguments("--allow-running-insecure-content")
+  .addArguments("--ignore-certificate-errors")
+  .addArguments("--disable-features=BlockInsecurePrivateNetworkRequests")
+  .addArguments("--no-sandbox")
+  .addArguments("--disable-dev-shm-usage")
+  .addArguments("--start-maximized");
 
   let driver = await new Builder()
     .forBrowser("chrome")
@@ -79,3 +87,57 @@ async function runTest() {
 
 runTest();
 
+// const { Builder, By, until } = require("selenium-webdriver");
+// const chrome = require("selenium-webdriver/chrome");
+
+// async function run() {
+//   // Required Chrome options for modern Selenium
+//   let options = new chrome.Options()
+//   .addArguments("--remote-allow-origins=*")
+//   .addArguments("--disable-web-security")
+//   .addArguments("--allow-running-insecure-content")
+//   .addArguments("--ignore-certificate-errors")
+//   .addArguments("--disable-features=BlockInsecurePrivateNetworkRequests")
+//   .addArguments("--disable-gpu")
+//   .addArguments("--no-sandbox")
+//   .addArguments("--disable-dev-shm-usage")
+//   .addArguments("--start-maximized");
+
+//   let driver = await new Builder()
+//     .forBrowser("chrome")
+//     .setChromeOptions(options)
+//     .build();
+
+//   // ✅ Make sure React is reached successfully
+//   const BASE_URL = "http://localhost:5000";
+
+//   try {
+//     // ✅ Retry loading until the server is ready
+//     let loaded = false;
+//     for (let i = 0; i < 10; i++) {
+//       try {
+//         await driver.get(BASE_URL);
+//         loaded = true;
+//         break;
+//       } catch (e) {
+//         console.log("React not ready yet, retrying...");
+//         await new Promise(r => setTimeout(r, 1000));
+//       }
+//     }
+
+//     if (!loaded) {
+//       throw new Error("Could not connect to React at localhost:5000");
+//     }
+
+//     console.log("✅ React loaded in Selenium");
+
+//     // Your test steps here...
+//     await driver.wait(until.elementLocated(By.css("h1")), 5000);
+//     console.log("✅ App header found!");
+
+//   } finally {
+//     await driver.quit();
+//   }
+// }
+
+// run();
