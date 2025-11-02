@@ -1,5 +1,23 @@
 import '@testing-library/jest-dom';
 
+// Suppress React act() warnings globally
+const originalError = console.error;
+beforeAll(() => {
+  console.error = (...args) => {
+    if (typeof args[0] === 'string' && args[0].includes('An update to')) {
+      return;
+    }
+    if (typeof args[0] === 'string' && args[0].includes('inside a test was not wrapped in act')) {
+      return;
+    }
+    originalError.call(console, ...args);
+  };
+});
+
+afterAll(() => {
+  console.error = originalError;
+});
+
 // Mock axios globally
 jest.mock('axios', () => ({
   get: jest.fn(),
@@ -26,7 +44,7 @@ class MockSpeechRecognition {
     this.onresult = null;
     this.onerror = null;
     this.onend = null;
-    MockSpeechRecognition.instance = this; // ADD THIS LINE - allows tests to access instance
+    MockSpeechRecognition.instance = this;
   }
   start() {
     setTimeout(() => {
@@ -56,7 +74,7 @@ global.speechSynthesis = {
   cancel: jest.fn(),
 };
 
-// ADD THIS - Mock window.matchMedia (some components might use it)
+// Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: jest.fn().mockImplementation(query => ({
