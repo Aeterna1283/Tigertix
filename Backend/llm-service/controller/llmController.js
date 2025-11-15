@@ -1,10 +1,11 @@
-
+require("dotenv").config();
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const llmModel = require('../model/llmModel');
 
 // Hide API key in production
-const apiKey = "AIzaSyBrGzToNCENjJz-maYY3-yu07NhW8_f_7A";
-const genAI = new GoogleGenerativeAI(apiKey);
+//const apiKey = "AIzaSyBrGzToNCENjJz-maYY3-yu07NhW8_f_7A";
+//const genAI = new GoogleGenerativeAI(apiKey);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const geminiModel = genAI.getGenerativeModel({
   model: 'gemini-2.5-flash',
   generationConfig: {
