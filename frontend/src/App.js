@@ -1,6 +1,7 @@
 
 import LLM from "./llm.js";  
 import logo from "./logo.png";
+import Login from "./login.js";
 import "./App.css";
 import { useState, useEffect } from "react";
 
@@ -15,12 +16,26 @@ import { useState, useEffect } from "react";
 
 function App() {
   const [events, setEvents] = useState([]);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:6001/api/events")
       .then((res) => res.json())
       .then((data) => setEvents(data))
       .catch((err) => console.error("Error fetching events:", err));
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      // Validate token with /me
+      fetch("http://localhost:8001/api/me", {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.ok ? res.json() : Promise.reject())
+        .then(data => setUser(data))
+        .catch(() => localStorage.removeItem("token"));
+    }
   }, []);
 
   /**
@@ -35,8 +50,12 @@ function App() {
 
      const buyTicket = async (eventId, eventName) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(`http://localhost:6001/api/events/${eventId}/purchase`, { 
-        method: 'POST' 
+        method: 'POST', 
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
       
       const data = await response.json();
@@ -59,6 +78,29 @@ function App() {
     }
   };
 
+if (!user) {
+    return(
+       <Login
+        onLogin={(token) => {
+  localStorage.setItem("token", token);
+  fetch("http://localhost:8001/api/me", {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(res => {
+      if (!res.ok) throw new Error("Invalid token");
+      return res.json();
+    })
+    .then(data => setUser(data))
+    .catch(err => {
+      console.error("Token validation failed:", err);
+      localStorage.removeItem("token");
+      alert("Login failed. Please try again.");
+    });
+}}
+     />
+    );
+  }
+
   /* @returns {JSX.Element} The main UI layout for the TigerTix app.
   *  @description Renders the TigerTix interface including:
   *  - **Header:** Displays the logo (decorative, aria-hidden) and app title.
@@ -72,6 +114,18 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="" aria-hidden="true" />
         <h1>TigerTix Event Tickets</h1>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginTop: "0.5rem" }}>
+            <span>Hi, {user?.username || user?.email}!</span>
+            <button
+              onClick={() => {
+                localStorage.removeItem("token");
+                setUser(null);
+              }}
+              style={{ padding: "0.5rem 1rem", background: "#e53e3e", color: "white", border: "none", borderRadius: "4px" }}
+            >
+              Logout
+            </button>
+          </div>
       </header>
 
       {/* Main Content */}

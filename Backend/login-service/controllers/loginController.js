@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ path: require("path").join(__dirname, "..", ".env") });
 const { hashPassword, comparePassword } = require("../utils/hash");
 const userModel = require("../models/loginModel");
 const jwt = require("jsonwebtoken");

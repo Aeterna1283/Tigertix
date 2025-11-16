@@ -1,11 +1,13 @@
 const sqlite3 = require("sqlite3").verbose();
+// const path = require("path");
+// require('dotenv').config();
+
+// // Use DATABASE_PATH from .env
+// const dbPath = process.env.DATABASE_PATH || path.join(__dirname, "../db/login.sqlite");
+
+//console.log(`[Model] Connecting to database at: ${dbPath}`);
 const path = require("path");
-require('dotenv').config();
-
-// Use DATABASE_PATH from .env
-const dbPath = process.env.DATABASE_PATH || path.join(__dirname, "../db/login.sqlite");
-console.log(`[Model] Connecting to database at: ${dbPath}`);
-
+const dbPath = path.join(__dirname, "..", "db", "login.sqlite");
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error("Failed to connect to DB:", err.message);
