@@ -7,8 +7,9 @@
 const express = require('express');
 const router = express.Router();
 const clientController = require('../controllers/clientController');
+const authenticate = require("../middleware/authMiddleware");
 
 router.get('/events', clientController.getEvents);
 //router.get('/events', clientController.getAnEvent)
-router.post('/events/:id/purchase', clientController.purchaseTicket);
+router.post('/events/:id/purchase', authenticate, clientController.purchaseTicket);
 module.exports = router;

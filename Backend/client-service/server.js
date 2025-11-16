@@ -4,7 +4,7 @@
  * @description Entry point for the Client microservice.
  * Sets up Express server, middleware, routes, and listens on specified port.
  */
-
+require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 const express = require('express');
 const cors = require('cors');
 const app = express();
