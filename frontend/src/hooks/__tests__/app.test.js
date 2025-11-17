@@ -33,16 +33,15 @@ jest.mock('../../llm', () => {
  * @description Replaces actual Login component with simple mock
  * Path from src/hooks/__tests__/app.test.js to src/components/login/login.js
  */
-jest.mock('../../components/login/login', () => {
+jest.mock('../../login', () => {
+  const React = require('react');
   return function MockLogin({ onLogin }) {
-    return (
-      <div data-testid="mock-login">
-        <h2>Login Component</h2>
-        <button onClick={() => onLogin("test-token-123")}>
-          Test Login
-        </button>
-      </div>
-    );
+    // Automatically login when component mounts
+    React.useEffect(() => {
+      onLogin("test-token-123");
+    }, [onLogin]);
+    
+    return null; // Don't render anything
   };
 });
 

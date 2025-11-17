@@ -50,7 +50,7 @@ describe("Login Component Rendering", () => {
     render(<Login onLogin={mockOnLogin} />);
     
     // FIXED: Use getByRole for heading instead of getByText to avoid duplicate text issue
-    expect(screen.getByRole("heading", { name: /log in/i })).toBeInTheDocument();
+    expect(screen.getByText("Log In", { selector: "h2" })).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Email or Username")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /log in/i })).toBeInTheDocument();
@@ -113,7 +113,8 @@ describe("Toggle Between Login and Register", () => {
     fireEvent.click(loginLink);
     
     // FIXED: Use getByRole for heading instead of getByText
-    expect(screen.getByRole("heading", { name: /log in/i })).toBeInTheDocument();
+    expect(screen.getByText("Log In", { selector: "h2" })).toBeInTheDocument();
+
     expect(screen.queryByPlaceholderText("Username")).not.toBeInTheDocument();
   });
 
@@ -250,7 +251,7 @@ describe("Registration Form Tests", () => {
     // Should switch back to login form
     // FIXED: Use getByRole for heading
     await waitFor(() => {
-      expect(screen.getByRole("heading", { name: /log in/i })).toBeInTheDocument();
+      expect(screen.getByText("Log In", { selector: "h2" })).toBeInTheDocument();
     });
     
     // Form should be cleared
