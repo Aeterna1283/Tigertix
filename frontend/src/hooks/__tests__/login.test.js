@@ -49,7 +49,8 @@ describe("Login Component Rendering", () => {
     const mockOnLogin = jest.fn();
     render(<Login onLogin={mockOnLogin} />);
     
-    expect(screen.getByText("Log In")).toBeInTheDocument();
+    // FIXED: Use getByRole for heading instead of getByText to avoid duplicate text issue
+    expect(screen.getByRole("heading", { name: /log in/i })).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Email or Username")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /log in/i })).toBeInTheDocument();
@@ -111,7 +112,8 @@ describe("Toggle Between Login and Register", () => {
     const loginLink = screen.getByRole("button", { name: /log in/i });
     fireEvent.click(loginLink);
     
-    expect(screen.getByText("Log In")).toBeInTheDocument();
+    // FIXED: Use getByRole for heading instead of getByText
+    expect(screen.getByRole("heading", { name: /log in/i })).toBeInTheDocument();
     expect(screen.queryByPlaceholderText("Username")).not.toBeInTheDocument();
   });
 
@@ -133,8 +135,9 @@ describe("Toggle Between Login and Register", () => {
     expect(screen.getByPlaceholderText("Password").value).toBe("");
   });
 
-  test("Clears error message when switching forms", () => {
+  test("Clears error message when switching forms", async () => {
     const mockOnLogin = jest.fn();
+    
     fetch.mockResolvedValueOnce({
       ok: false,
       json: async () => ({ message: "Invalid credentials" })
@@ -151,8 +154,8 @@ describe("Toggle Between Login and Register", () => {
     fireEvent.change(passwordInput, { target: { value: "wrong" } });
     fireEvent.click(submitButton);
     
-    // Wait for error to appear
-    waitFor(() => {
+    // FIXED: Added await to waitFor
+    await waitFor(() => {
       expect(screen.getByText("Invalid credentials")).toBeInTheDocument();
     });
     
@@ -245,8 +248,9 @@ describe("Registration Form Tests", () => {
     });
     
     // Should switch back to login form
+    // FIXED: Use getByRole for heading
     await waitFor(() => {
-      expect(screen.getByText("Log In")).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /log in/i })).toBeInTheDocument();
     });
     
     // Form should be cleared

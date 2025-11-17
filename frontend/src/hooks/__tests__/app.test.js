@@ -19,9 +19,10 @@ global.fetch = jest.fn();
 /**
  * Mock llm component to isolate App component testing
  * @description Replaces actual LLM component with simple mock to avoid side effects
- * FIXED: Updated to correct path based on your project structure
+ * FIXED: Updated to correct path - llm.js is in src folder
+ * Path from src/hooks/__tests__/app.test.js to src/llm.js is ../../llm
  */
-jest.mock('../../components/llm/llm', () => {
+jest.mock('../../llm', () => {
   return function MockLLM({events, setEvents}) {
     return <div data-testid="mock-llm">LLM Component</div>;
   };
@@ -30,6 +31,7 @@ jest.mock('../../components/llm/llm', () => {
 /**
  * Mock Login component to isolate App component testing
  * @description Replaces actual Login component with simple mock
+ * Path from src/hooks/__tests__/app.test.js to src/components/login/login.js
  */
 jest.mock('../../components/login/login', () => {
   return function MockLogin({ onLogin }) {
