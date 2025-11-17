@@ -420,8 +420,10 @@ describe('Concurrency and Race Condition Tests', () => {
       const results = await Promise.all(operations);
 
       // Check expected results
-      expect(results[0].status).toBe(201); // user1 registration
-      expect(results[1].status).toBe(201); // user2 registration
+      const regStatuses = [results[0].status, results[1].status].sort();
+      expect(regStatuses).toEqual([201, 201]);
+      // expect(results[0].status).toBe(201); // user1 registration
+      // expect(results[1].status).toBe(201); // user2 registration
       expect(results[2].status).toBe(200); // login with email
       expect(results[3].status).toBe(200); // login with username
       expect(results[4].status).toBe(200); // /me request
