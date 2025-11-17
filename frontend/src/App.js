@@ -78,6 +78,10 @@ function App() {
     }
   };
 
+  if (events.length === 0) {
+  return <p>Loading events...</p>;
+}
+
 if (!user) {
     return(
        <Login
